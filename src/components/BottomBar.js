@@ -1,40 +1,38 @@
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Grid, Heart, ShoppingCart, User, Home } from "lucide-react-native";
+import { Heart, ShoppingCart, User, Home } from "lucide-react-native";
 import { useState } from "react";
-import { useNavigation } from "@react-navigation/native"; // 🔥 TAMBAH INI
+import { useNavigation } from "@react-navigation/native";
 
 const tabs = [
-  { id: 0, icon: Home, screen: "Home" },
-  { id: 1, icon: Heart, screen: "Wishlist" }, // 🔥 HEART KE WISHLIST
-  { id: 2, icon: ShoppingCart, screen: "Cart" },
-  { id: 3, icon: User, screen: "Profile" },
+  { icon: Home, screen: "Home" },
+  { icon: Heart, screen: "Wishlist" },
+  { icon: ShoppingCart, screen: "Cart" },
+  { icon: User, screen: "Profile" },
 ];
 
-export default function BottomBar() {
+export default function BottomBar({ setGlobalLoading }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [positions, setPositions] = useState([]);
+  const navigation = useNavigation();
 
-  const navigation = useNavigation(); // 🔥 INI PENTING
+  const handlePress = (index, screen) => {
+    if (index === activeIndex) return;
+
+    setActiveIndex(index);
+    setGlobalLoading(true);
+
+    setTimeout(() => {
+      navigation.navigate(screen);
+
+      setTimeout(() => {
+        setGlobalLoading(false);
+      }, 300);
+
+    }, 700);
+  };
 
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-
-        {/* 🔥 BULATAN */}
-        {positions[activeIndex] && (
-          <View
-            style={[
-              styles.activeIndicator,
-              {
-                left:
-                  positions[activeIndex].x +
-                  positions[activeIndex].width / 2 -
-                  20,
-              },
-            ]}
-          />
-        )}
-
         {tabs.map((item, index) => {
           const Icon = item.icon;
           const isActive = activeIndex === index;
@@ -43,24 +41,9 @@ export default function BottomBar() {
             <TouchableOpacity
               key={index}
               style={styles.tab}
-              onPress={() => {
-                setActiveIndex(index);
-
-                // 🔥 NAVIGATION DISINI
-                if (item.screen) {
-                  navigation.navigate(item.screen);
-                }
-              }}
-              onLayout={(e) => {
-                const layout = e.nativeEvent.layout;
-                setPositions((prev) => {
-                  const newPos = [...prev];
-                  newPos[index] = layout;
-                  return newPos;
-                });
-              }}
+              onPress={() => handlePress(index, item.screen)}
             >
-              <Icon size={22} color={isActive ? "#fff" : "#999"} />
+              <Icon size={22} color={isActive ? "#FF660E" : "#999"} />
             </TouchableOpacity>
           );
         })}
@@ -78,27 +61,15 @@ const styles = StyleSheet.create({
 
   container: {
     flexDirection: "row",
-    alignItems: "center",
-    height: 70,
+    height: 65,
     backgroundColor: "#fff",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    elevation: 10,
+    borderTopWidth: 0.5,
+    borderColor: "#ddd",
   },
 
   tab: {
     flex: 1,
-    alignItems: "center",
     justifyContent: "center",
-    zIndex: 2,
-  },
-
-  activeIndicator: {
-    position: "absolute",
-    top: 15,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: "#ff6600",
+    alignItems: "center",
   },
 });

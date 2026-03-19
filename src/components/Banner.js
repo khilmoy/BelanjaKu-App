@@ -12,9 +12,27 @@ import { useState, useRef, useEffect } from "react";
 const { width } = Dimensions.get("window");
 
 const banners = [
-  { id: 1, image: "https://images.pexels.com/photos/20247841/pexels-photo-20247841.jpeg" },
-  { id: 2, image: "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg" },
-  { id: 3, image: "https://images.pexels.com/photos/19090/pexels-photo.jpg" },
+  {
+    id: 1,
+    image: "https://images.pexels.com/photos/20247841/pexels-photo-20247841.jpeg",
+    title: "Super Sale",
+    subtitle: "Discount",
+    highlight: "Up to 50%"
+  },
+  {
+    id: 2,
+    image: "https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg",
+    title: "Flash Sale",
+    subtitle: "Limited Time",
+    highlight: "Only Today!"
+  },
+  {
+    id: 3,
+    image: "https://images.pexels.com/photos/19090/pexels-photo.jpg",
+    title: "New Arrival",
+    subtitle: "Trending Now",
+    highlight: "Shop Now"
+  },
 ];
 
 export default function Banner() {
@@ -24,7 +42,6 @@ export default function Banner() {
   const ITEM_WIDTH = width - 40;
   const SPACING = 20;
 
-  // 🔥 AUTO SLIDE
   useEffect(() => {
     const interval = setInterval(() => {
       const nextIndex = (activeIndex + 1) % banners.length;
@@ -82,8 +99,8 @@ export default function Banner() {
   );
 }
 
-/* 🔥 ITEM TERPISAH (BIAR GA BUG LOADING) */
-function BannerItem({ item, index }) {
+/* 🔥 ITEM */
+function BannerItem({ item }) {
   const [loaded, setLoaded] = useState(false);
 
   const ITEM_WIDTH = width - 35;
@@ -98,10 +115,10 @@ function BannerItem({ item, index }) {
     >
       <View style={{ position: "relative" }}>
 
-        {/* 🔥 PLACEHOLDER */}
+        {/* PLACEHOLDER */}
         {!loaded && <View style={styles.placeholder} />}
 
-        {/* 🔥 IMAGE */}
+        {/* IMAGE */}
         <Image
           source={{ uri: item.image }}
           style={[styles.image, { opacity: loaded ? 1 : 0 }]}
@@ -111,9 +128,12 @@ function BannerItem({ item, index }) {
 
         <View style={styles.overlay} />
 
-        <Text style={styles.text}>
-          Super Sale{"\n"}Discount{"\n"}Up to 50%
-        </Text>
+        {/* 🔥 TEXT DINAMIS */}
+        <View style={styles.textContainer}>
+          <Text style={styles.sale}>{item.title}</Text>
+          <Text style={styles.discount}>{item.subtitle}</Text>
+          <Text style={styles.percent}>{item.highlight}</Text>
+        </View>
 
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Shop Now</Text>
@@ -136,7 +156,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 180,
     borderRadius: 15,
-    backgroundColor: "#e0e0e0" // 🔥 ganti warna sesuai selera
+    backgroundColor: "#e0e0e0"
   },
 
   overlay: {
@@ -149,13 +169,28 @@ const styles = StyleSheet.create({
     borderRadius: 15
   },
 
-  text: {
+  textContainer: {
     position: "absolute",
     top: 40,
     left: 20,
-    fontSize: 20,
+  },
+
+  sale: {
+    color: "#fff",
+    fontSize: 14,
+  },
+
+  discount: {
+    color: "#fff",
+    fontSize: 22,
     fontWeight: "bold",
-    color: "#fff"
+    marginVertical: 2,
+  },
+
+  percent: {
+    color: "#FFD700",
+    fontSize: 16,
+    fontWeight: "600",
   },
 
   button: {
