@@ -1,35 +1,102 @@
-import { View, Text, Image, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  RefreshControl
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useCallback } from "react";
 
 const categories = [
-  { name: "Shoes", image: "https://images.pexels.com/photos/1456706/pexels-photo-1456706.jpeg" },
-  { name: "Beauty", image: "https://images.pexels.com/photos/8981524/pexels-photo-8981524.jpeg" },
-  { name: "Women's\nFashion", image: "https://images.pexels.com/photos/13282702/pexels-photo-13282702.jpeg" },
-  { name: "Jewelry", image: "https://images.pexels.com/photos/33154729/pexels-photo-33154729.jpeg" },
-  { name: "Men's\nFashion", image: "https://images.pexels.com/photos/18110912/pexels-photo-18110912.jpeg" },
+  {
+    name: "Shoes",
+    value: "shoes",
+    image: "https://images.pexels.com/photos/1456706/pexels-photo-1456706.jpeg",
+  },
+  {
+    name: "Beauty",
+    value: "beauty",
+    image: "https://images.pexels.com/photos/8981524/pexels-photo-8981524.jpeg",
+  },
+  {
+    name: "Women's\nFashion",
+    value: "women fashion",
+    image: "https://images.pexels.com/photos/13282702/pexels-photo-13282702.jpeg",
+  },
+  {
+    name: "Jewelry",
+    value: "jewelry",
+    image: "https://images.pexels.com/photos/33154729/pexels-photo-33154729.jpeg",
+  },
+  {
+    name: "Men's\nFashion",
+    value: "mens fashion",
+    image: "https://images.pexels.com/photos/18110912/pexels-photo-18110912.jpeg",
+  },
 ];
 
-export default function CategoryList() {
+export default function CategoryList({ setGlobalLoading }) {
+  const navigation = useNavigation();
+
+  // 🔥 REFRESH (GLOBAL LOADING ONLY)
+  const onRefresh = useCallback(() => {
+    if (setGlobalLoading) setGlobalLoading(true);
+
+    setTimeout(() => {
+      if (setGlobalLoading) setGlobalLoading(false);
+    }, 1000);
+  }, []);
+
+  const handlePress = (value) => {
+    if (setGlobalLoading) setGlobalLoading(true);
+
+    setTimeout(() => {
+      navigation.navigate("Product", {
+        category: value,
+      });
+
+      setTimeout(() => {
+        if (setGlobalLoading) setGlobalLoading(false);
+      }, 300);
+
+    }, 800);
+  };
+
   return (
     <View style={styles.container}>
-      
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent} // 🔥 jarak kiri kanan
+        contentContainerStyle={styles.scrollContent}
+
+        // 🔥 REFRESH TANPA SPINNER
+        refreshControl={
+          <RefreshControl
+            refreshing={false}
+            onRefresh={onRefresh}
+            colors={["transparent"]}
+            tintColor="transparent"
+          />
+        }
       >
-        {categories.map((item, index) => (
-          <View key={index} style={styles.item}>
-            
+        {categories.map((item) => (
+          <TouchableOpacity
+            key={item.value}
+            style={styles.item}
+            activeOpacity={0.7}
+            onPress={() => handlePress(item.value)}
+          >
             <Image source={{ uri: item.image }} style={styles.image} />
 
             <Text style={styles.text}>
               {item.name}
             </Text>
-
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
-
     </View>
   );
 }
@@ -40,12 +107,12 @@ const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    paddingHorizontal: 10, // 🔥 konsisten sama HomeScreen
+    paddingHorizontal: 10,
   },
 
   item: {
     alignItems: "center",
-    marginRight: 18, // 🔥 sedikit lebih lega
+    marginRight: 18,
   },
 
   image: {
@@ -59,6 +126,7 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontWeight: "500",
     textAlign: "center",
-    maxWidth: 70, // 🔥 biar ga melebar
+    maxWidth: 70,
+    color: "#555",
   },
 });

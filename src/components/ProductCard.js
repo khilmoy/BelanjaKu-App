@@ -9,7 +9,6 @@ export default function ProductCard({ item }) {
 
   const liked = wishlist.some(i => i.id === item.id);
 
-  // 🔥 FORMAT ANGKA
   const formatNumber = (num) => {
     if (num >= 1000) return (num / 1000).toFixed(1) + "k";
     return num;
@@ -18,14 +17,12 @@ export default function ProductCard({ item }) {
   return (
     <View style={styles.container}>
 
-      {/* 🖼️ GAMBAR */}
       <Image
         source={{ uri: item.image }}
         style={styles.image}
         resizeMode="cover"
       />
 
-      {/* ❤️ LOVE */}
       <TouchableOpacity
         style={styles.heart}
         onPress={() => toggleLike(item)}
@@ -37,19 +34,15 @@ export default function ProductCard({ item }) {
         />
       </TouchableOpacity>
 
-      {/* 🔥 OVERLAY */}
       <View style={styles.overlay}>
-
         <Text numberOfLines={1} style={styles.name}>
           {item.name}
         </Text>
 
-        {/* 💰 HARGA */}
         <Text style={styles.price}>
           ${item.price}
         </Text>
 
-        {/* ⭐ RATING + TERJUAL */}
         <View style={styles.row}>
           <Text style={styles.rating}>
             ⭐ {item.rating}
@@ -59,7 +52,6 @@ export default function ProductCard({ item }) {
             {formatNumber(item.sold)} sold
           </Text>
         </View>
-
       </View>
 
     </View>
@@ -68,8 +60,8 @@ export default function ProductCard({ item }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    margin: 6,
+    width: "48%", // 🔥 INI KUNCI BIAR 2 KOLOM
+    marginBottom: 12,
     height: 200,
     borderRadius: 18,
     overflow: "hidden",
@@ -105,7 +97,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 
-  // 🔥 HARGA ORANGE (MARKETPLACE STYLE)
   price: {
     color: "#ff6600",
     marginTop: 3,
@@ -120,7 +111,7 @@ const styles = StyleSheet.create({
   },
 
   rating: {
-    color: "#ffd700", // kuning biar kayak marketplace
+    color: "#ffd700",
     fontSize: 11,
   },
 

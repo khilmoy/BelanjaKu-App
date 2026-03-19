@@ -13,6 +13,7 @@ import { useState, useRef, useEffect } from "react";
 
 import HomeScreen from "./src/screens/HomeScreen";
 import WishlistScreen from "./src/screens/WishlistScreen";
+import ProductScreen from "./src/screens/ProductScreen";
 
 import BottomBar from "./src/components/BottomBar";
 import { WishlistProvider } from "./src/context/WishlistContext";
@@ -22,7 +23,6 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   const [loading, setLoading] = useState(false);
 
-  // 🔥 ANIMATION
   const rotateAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -56,7 +56,6 @@ export default function App() {
 
         <SafeAreaView style={{ flex: 1 }}>
 
-          {/* 🔥 SCREEN */}
           <View style={{ flex: 1 }}>
             <Stack.Navigator
               screenOptions={{
@@ -64,8 +63,37 @@ export default function App() {
                 animation: "none",
               }}
             >
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Wishlist" component={WishlistScreen} />
+
+              {/* ✅ HOME */}
+              <Stack.Screen name="Home">
+                {(props) => (
+                  <HomeScreen
+                    {...props}
+                    setGlobalLoading={setLoading}
+                  />
+                )}
+              </Stack.Screen>
+
+              {/* ✅ WISHLIST (FIX ERROR DI SINI) */}
+              <Stack.Screen name="Wishlist">
+                {(props) => (
+                  <WishlistScreen
+                    {...props}
+                    setGlobalLoading={setLoading}
+                  />
+                )}
+              </Stack.Screen>
+
+              {/* ✅ PRODUCT */}
+              <Stack.Screen name="Product">
+                {(props) => (
+                  <ProductScreen
+                    {...props}
+                    setGlobalLoading={setLoading}
+                  />
+                )}
+              </Stack.Screen>
+
             </Stack.Navigator>
           </View>
 
@@ -74,7 +102,7 @@ export default function App() {
 
         </SafeAreaView>
 
-        {/* 🔥 MODERN LOADING */}
+        {/* 🔥 GLOBAL LOADING */}
         <Modal visible={loading} transparent animationType="fade">
           <View style={styles.loadingOverlay}>
 
